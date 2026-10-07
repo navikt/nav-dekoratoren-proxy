@@ -1,0 +1,12 @@
+name: PR test
+on:
+  pull_request:
+    branches: [main]
+permissions: { contents: read, id-token: write }
+jobs:
+  build-and-test:
+    uses: navikt/navno-ci/.github/workflows/node-build.yml@v1
+    with:
+      push-image: false
+      team: personbruker
+    secrets: inherit

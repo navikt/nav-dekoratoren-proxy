@@ -1,0 +1,8 @@
+ingresses:
+  - https://dekoratoren-proxy.ekstern.dev.nav.no
+replicas:
+  min: 2
+  max: 4
+resources:
+  requests: { cpu: 50m, memory: 128Mi }
+  limits: { memory: 256Mi }

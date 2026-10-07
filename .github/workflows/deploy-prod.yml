@@ -1,0 +1,38 @@
+name: Deploy proxy to prod
+on:
+  workflow_dispatch:
+    inputs:
+      CONFIRM:
+        description: 'Type "personbruker-cutover" to confirm that nav-dekoratoren in personbruker will be REPLACED by the proxy'
+        required: true
+        type: string
+permissions: { contents: read, id-token: write }
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        env:
+          CONFIRM: ${{ inputs.CONFIRM }}
+        run: |
+          if [ "$CONFIRM" != "personbruker-cutover" ]; then echo "Not confirmed"; exit 1; fi
+  build:
+    needs: guard
+    uses: navikt/navno-ci/.github/workflows/node-build.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      team: personbruker
+      image-suffix: prod
+      prune-remove: ''
+      platforms: linux/amd64,linux/arm64
+    secrets: inherit
+  deploy:
+    needs: build
+    uses: navikt/navno-ci/.github/workflows/nais-deploy.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      cluster: prod-gcp
+      resource: .nais/app.yml
+      hpa-resource: .nais/hpa-prod.yml
+      vars: .nais/vars/prod.yml
+      var: image=${{ needs.build.outputs.image }}

@@ -1,0 +1,8 @@
+ingresses:
+  - https://www.nav.no/dekoratoren-proxy
+replicas:
+  min: 2
+  max: 10
+resources:
+  requests: { cpu: 200m, memory: 128Mi }
+  limits: { memory: 256Mi }

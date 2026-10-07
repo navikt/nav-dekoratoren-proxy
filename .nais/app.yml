@@ -1,0 +1,64 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: nav-dekoratoren-proxy
+  namespace: personbruker
+  labels:
+    team: personbruker
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "256M"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+spec:
+  image: {{image}}
+  port: 8089
+  liveness:
+    path: /isAlive
+    port: 8090
+    initialDelay: 5
+  readiness:
+    path: /isReady
+    port: 8090
+    initialDelay: 5
+  prometheus:
+    enabled: true
+    port: "8090"
+    path: /metrics
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+  ingresses:
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: "*"
+          namespace: "*"
+    outbound:
+      rules:
+        - application: nav-dekoratoren
+          namespace: navno
+  env:
+    - name: UPSTREAM_URL
+      value: http://nav-dekoratoren.navno
+  replicas:
+    disableAutoScaling: true
+  {{#with replicas}}
+    min: {{min}}
+    max: {{max}}
+  {{/with}}
+  resources:
+  {{#with resources}}
+    requests:
+      cpu: {{requests.cpu}}
+      memory: {{requests.memory}}
+    limits:
+      memory: {{limits.memory}}
+  {{/with}}
