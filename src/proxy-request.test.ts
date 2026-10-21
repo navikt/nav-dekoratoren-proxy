@@ -78,7 +78,7 @@ describe('proxy request forwarding', () => {
 		const body = Buffer.alloc(5 * 1024 * 1024, 'x');
 		const response = await request(`${proxy.url}/large-body`, { method: 'POST', body });
 		expect(response.statusCode).toBe(200);
-		expect(Buffer.from(proxy.lastRequest.body)).toEqual(body);
+		expect(Buffer.from(proxy.lastRequest.body).equals(body)).toBe(true);
 		await response.body.dump();
 	});
 });
