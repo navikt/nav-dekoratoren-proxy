@@ -1,8 +1,10 @@
 # nav-dekoratoren-proxy
 
-En midlertidig, transparent proxy som lar apper i `personbruker` fortsette å kalle
-`nav-dekoratoren.personbruker` i en periode etter at dekoratøren er flyttet til `navno`-namespace. Alle metoder, stier, spørringer, headere og responsdata videresendes til
-`http://nav-dekoratoren.navno`. Ingen endepunkter valideres eller beskyttes av proxien.
+En midlertidig transparent proxy for å teste trafikk mot dekoratøren som kjører i `navno`.
+Proxyen deployes som den separate Nais-appen `nav-dekoratoren-proxy` i
+`personbruker`, slik at den kan kjøre side om side med `nav-dekoratoren`. Alle
+metoder, stier, spørringer, headere og responsdata videresendes til
+`http://nav-dekoratoren.navno`. Ingen endepunkter valideres eller beskyttes av proxien, det gjøres i den faktiske nav-dekoratøren.
 
 
 ## Lokal kjøring
@@ -12,7 +14,6 @@ En midlertidig, transparent proxy som lar apper i `personbruker` fortsette å ka
 3. Kjør `pnpm run dev` for å starte proxyen på `http://localhost:9080`.
 4. Pek testappens dekoratøradresse til `http://localhost:9080`. Kall videresendes
    til dekoratøren på port `8089` med samme sti og spørring.
-
 
 `pnpm run dev` bruker Node sin innebygde støtte for å laste `.env` før serveren
 starter. Miljøvariabler satt i terminalen har forrang. `.env` er ignorert av Git.
