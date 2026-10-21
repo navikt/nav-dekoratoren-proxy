@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "UPSTREAM_URL=http://localhost:8088 tsx watch src/server.ts",
+		"dev": "node --env-file=.env.local --import=tsx --watch src/server.ts",
 		"build": "esbuild src/server.ts --bundle --platform=node --target=node24 --format=cjs --outfile=dist/server.cjs",
 		"start": "node dist/server.cjs",
 		"test": "vitest run",

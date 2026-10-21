@@ -1,20 +1,29 @@
 # nav-dekoratoren-proxy
 
 En midlertidig, transparent proxy som lar apper i `personbruker` fortsette å kalle
-`nav-dekoratoren.personbruker` mens dekoratøren flyttes til `navno`. Alle metoder,
-stier, spørringer, headere og responsdata videresendes til
-`http://nav-dekoratoren.navno`. Ingen endepunkter tolkes eller omskrives av proxyen.
+`nav-dekoratoren.personbruker` i en periode etter at dekoratøren er flyttet til `navno`-namespace. Alle metoder, stier, spørringer, headere og responsdata videresendes til
+`http://nav-dekoratoren.navno`. Ingen endepunkter valideres eller beskyttes av proxien.
 
-**Viktig:** Deploy av denne appen erstatter den eksisterende `nav-dekoratoren` i
-`personbruker`. Bruk kun manuell deploy med bekreftelse som del av en planlagt
-cutover, først i dev-stable og deretter i prod. Den egentlige dekoratøren må allerede
-være tilgjengelig i `navno`; ved tilbakeføring må den gamle appen deployes igjen.
 
 ## Lokal kjøring
 
-Krever Node 24 og pnpm 11. Kjør `pnpm install`, `pnpm build`, og
-`UPSTREAM_URL=http://localhost:8088 pnpm start`. `pnpm test` kjører Vitest;
-`pnpm lint` sjekker ESLint og TypeScript.
+1. Kjør `pnpm install`.
+2. Start den lokale dekoratøren på `http://localhost:8089`.
+3. Kjør `pnpm run dev` for å starte proxyen på `http://localhost:9080`.
+4. Pek testappens dekoratøradresse til `http://localhost:9080`. Kall videresendes
+   til dekoratøren på port `8089` med samme sti og spørring.
+
+
+`pnpm run dev` bruker Node sin innebygde støtte for å laste `.env` før serveren
+starter. Miljøvariabler satt i terminalen har forrang. `.env` er ignorert av Git.
+Start dev-serveren på nytt etter endringer i `.env`. `pnpm start` og
+produksjonsoppsettet bruker fortsatt miljøvariabler uten å laste en lokal fil.
+
+Ved lokal utvikling er administrasjonsporten `9081`, med helseendepunkter og
+metrikker på blant annet `http://localhost:9081/metrics`. Produksjonsstandardene
+for portene er uendret.
+
+`pnpm test` kjører Vitest; `pnpm lint` sjekker ESLint og TypeScript.
 
 `src/proxy.ts` setter opp proxyen og bruker hjelpere i `src/helpers` for livssyklus,
 responser og feil. Proxytestene er delt etter forespørsler, responser, feil og
