@@ -18,7 +18,7 @@ jobs:
     permissions: { contents: read, id-token: write }
     with:
       cluster: dev-gcp
-      resource: .nais/app.yml
+      resource: .nais/config.yml
       hpa-resource: .nais/hpa-dev.yml
       vars: .nais/vars/dev.yml
       var: image=${{ needs.build.outputs.image }}

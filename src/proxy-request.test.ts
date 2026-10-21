@@ -1,10 +1,23 @@
 import { request as httpRequest } from 'node:http';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { request } from 'undici';
+import { logger } from './logger';
 import { useProxyFixture } from './test-helpers/proxy-fixture';
 
 describe('proxy request forwarding', () => {
 	const proxy = useProxyFixture();
+
+	it('logs the relayed path without the query string', async () => {
+		const log = vi.spyOn(logger, 'info').mockImplementation(() => {});
+		try {
+			const response = await request(`${proxy.url}/dekoratoren//ssr?teamName=a.b&private=not-for-logs`);
+			await response.body.dump();
+			expect(log).toHaveBeenCalledExactlyOnceWith('Beta: /dekoratoren//ssr');
+			expect(proxy.lastRequest.url).toBe('/dekoratoren//ssr?teamName=a.b&private=not-for-logs');
+		} finally {
+			log.mockRestore();
+		}
+	});
 
 	it.each(['/dekoratoren/ssr?teamName=a.b&ver=abc1234', '/dekoratoren//ssr', '/common-html/v4/navno/header?x=%2F'])(
 		'preserves the path and query: %s',

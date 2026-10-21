@@ -44,6 +44,10 @@ er uavhengige av oppstrømsappen.
 | `UPSTREAM_TIMEOUT_MS`         | `600000` | Tid til headere og inaktiv responsstrøm                           |
 | `SHUTDOWN_DELAY_MS`           | `5000`   | Ventetid før tilkoblinger lukkes ved nedstenging                  |
 
+Hvert videresendingsforsøk logges på info-nivå med meldingen `Beta: /forespørselssti`.
+Spørringsparametre, headere og forespørselskropp logges ikke. Loggen viser hvilke
+kall som går gjennom proxyen, men bekrefter ikke at oppstrømsappen svarte.
+
 Proxyen teller forespørsler etter kilde, rute og gyldig `teamName`. Antall
 gjenværende service discovery-kall siste døgn:
 

@@ -6,6 +6,7 @@ import { requestHeadersToHeadersMap, stripHopByHopHeaders } from './headers';
 import { createErrorResponse, getErrorCode, isUpstreamTimeout, logUpstreamError } from './helpers/proxy-errors';
 import { createProxyLifecycle } from './helpers/proxy-lifecycle';
 import { createUpstreamResponse } from './helpers/proxy-response';
+import { logger } from './logger';
 
 export type { ProxyResult } from './helpers/proxy-errors';
 
@@ -30,6 +31,7 @@ export function createProxyApp(config: AppConfig): { app: Hono<{ Bindings: HttpB
 
 		try {
 			const headers = stripHopByHopHeaders(requestHeadersToHeadersMap(incoming.headers));
+			logger.info(`Beta: ${details.rawTarget.split('?')[0] || '/'}`);
 			const upstream = await agent.request({
 				origin: config.upstreamUrl,
 				path: details.rawTarget,
