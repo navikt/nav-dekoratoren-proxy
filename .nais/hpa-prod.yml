@@ -11,11 +11,11 @@ spec:
     kind: Deployment
     name: nav-dekoratoren-proxy
   minReplicas: 2
-  maxReplicas: 10
+  maxReplicas: 40
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 80

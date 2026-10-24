@@ -1,5 +1,5 @@
 ingresses:
-  - https://dekoratoren-proxy.ekstern.dev.nav.no
+  - https://dekoratoren.ekstern.dev.nav.no
 replicas:
   min: 2
   max: 4
